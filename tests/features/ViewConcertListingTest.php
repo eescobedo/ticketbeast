@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ViewConcertListingTest extends TestCase
 {
+
     use DatabaseMigrations;
 
     /** @test */
@@ -16,17 +17,17 @@ class ViewConcertListingTest extends TestCase
         // Arrange
         // Create a concert
         $concert = Concert::create([
-            'title' => 'The Red Chord',
-            'subtitle' => 'with animosity and Lethargy',
-            'date' => Carbon::parse('December 13, 2016 8:00pm'),
-            'ticket_price' => 3250,
-            'venue' => 'The Mosh Pit',
-            'venue_address' => '123 Example Lane',
-            'city' => 'Laraville',
-            'state' => 'ON',
-            'zip' => '17196',
+            'title'                  => 'The Red Chord',
+            'subtitle'               => 'with animosity and Lethargy',
+            'date'                   => Carbon::parse('December 13, 2016 8:00pm'),
+            'ticket_price'           => 3250,
+            'venue'                  => 'The Mosh Pit',
+            'venue_address'          => '123 Example Lane',
+            'city'                   => 'Laraville',
+            'state'                  => 'ON',
+            'zip'                    => '17196',
             'additional_information' => 'For tickets, call (555) 555-5555.',
-            'published_at' => Carbon::parse('-1 week')
+            'published_at'           => Carbon::parse('-1 week')
         ]);
 
         // Act
@@ -53,7 +54,7 @@ class ViewConcertListingTest extends TestCase
             'published_at' => null
         ]);
 
-        $this->get('/concerts/'.$concert->id);
+        $this->get('/concerts/' . $concert->id);
 
         $this->assertResponseStatus(404);
     }
