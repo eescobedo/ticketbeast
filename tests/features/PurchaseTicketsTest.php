@@ -1,8 +1,8 @@
 <?php
 
-use App\Billing\FakePaymentGateway;
-use App\Billing\PaymentGateway;
 use App\Concert;
+use App\Billing\PaymentGateway;
+use App\Billing\FakePaymentGateway;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class PurchaseTicketsTest extends TestCase
@@ -23,9 +23,9 @@ class PurchaseTicketsTest extends TestCase
         // Act
         // Purchase a concert tickets
         $this->json('POST', "/concerts/{$concert->id}/orders", [
-            'email'           => 'john@example.com',
+            'email' => 'john@example.com',
             'ticket_quantity' => 3,
-            'payment_token'   => $paymentGateway->getValidTestToken()
+            'payment_token' => $paymentGateway->getValidTestToken()
         ]);
 
         // Assert
@@ -38,6 +38,6 @@ class PurchaseTicketsTest extends TestCase
         $order = $concert->orders()->where('email', 'john@example.com')->first();
 
         $this->assertNotNull($order);
-        $this->assertEquals(3, $order->tickets->count());
+        $this->assertEquals(3, $order->tickets()->count());
     }
 }
