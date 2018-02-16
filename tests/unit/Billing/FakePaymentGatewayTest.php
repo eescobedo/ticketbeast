@@ -22,7 +22,7 @@ class FakePaymentGatewayTest extends TestCase
         try {
             $paymentGateway = new FakePaymentGateway;
             $paymentGateway->charge(2500, 'invalid-token-payment');
-        } catch (PaymentFailedException $e){
+        } catch (PaymentFailedException $e) {
             return;
         }
 
