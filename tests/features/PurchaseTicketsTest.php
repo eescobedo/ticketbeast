@@ -23,9 +23,9 @@ class PurchaseTicketsTest extends TestCase
         // Act
         // Purchase a concert tickets
         $this->json('POST', "/concerts/{$concert->id}/orders", [
-            'email' => 'john@example.com',
+            'email'           => 'john@example.com',
             'ticket_quantity' => 3,
-            'payment_token' => $paymentGateway->getValidTestToken()
+            'payment_token'   => $paymentGateway->getValidTestToken()
         ]);
 
         // Assert
