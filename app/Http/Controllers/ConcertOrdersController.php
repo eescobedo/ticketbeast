@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Billing\PaymentFailedException;
 use App\Billing\PaymentGateway;
 use App\Concert;
 
@@ -20,21 +21,30 @@ class ConcertOrdersController extends Controller
         $this->paymentGateway = $paymentGateway;
     }
 
-
     public function store($concertId)
     {
-        $concert = Concert::find($concertId);
-        $ticketQuantity = request('ticket_quantity');
-        $amount = $ticketQuantity * $concert->ticket_price;
-        $token = request('payment_token');
-        $this->paymentGateway->charge($amount, $token);
+        $concert = Concert::published()->findOrFail($concertId);
 
-        $order = $concert->orders()->create(['email' => request('email')]);
+        $this->validate(request(), [
+            'email'           => ['required', 'email'],
+            'ticket_quantity' => ['required', 'integer', 'min:1'],
+            'payment_token'   => ['required']
+        ]);
 
-        foreach (range(1, $ticketQuantity) as $i) {
-            $order->tickets()->create([]);
+        try {
+
+            // Charging the customer
+            $this->paymentGateway->charge(
+                request('ticket_quantity') * $concert->ticket_price,
+                request('payment_token')
+            );
+
+            // Creating the order
+            $concert->orderTickets(request('email'), request('ticket_quantity'));
+
+            return response()->json([], 201);
+        } catch (PaymentFailedException $e) {
+            return response()->json([], 422);
         }
-
-        return response()->json([], 201);
     }
 }
