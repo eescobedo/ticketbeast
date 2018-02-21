@@ -1,7 +1,7 @@
 <?php
 
-use App\Concert;
 use App\Order;
+use App\Concert;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class OrderTest extends TestCase
@@ -13,8 +13,7 @@ class OrderTest extends TestCase
     function tickets_are_relased_when_an_order_is_cancelled()
     {
         // Arrange
-        $concert = factory(Concert::class)->create();
-        $concert->addTickets(10);
+        $concert = factory(Concert::class)->create()->addTickets(10);
 
         // Act
         $order = $concert->orderTickets('jane@example.com', 5);
