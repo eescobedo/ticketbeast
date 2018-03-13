@@ -10,6 +10,24 @@ class OrderTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
+    function converting_to_an_array()
+    {
+        // Arrange
+        $concert = factory(Concert::class)->create(['ticket_price' => 1200])->addTickets(5);
+        $order = $concert->orderTickets('jane@example.com', 5);
+
+        // Act
+        $result = $order->toArray();
+
+        // Assert
+        $this->assertEquals([
+            'email'           => 'jane@example.com',
+            'ticket_quantity' => 5,
+            'amount'          => 6000
+        ], $result);
+    }
+
+    /** @test */
     function tickets_are_relased_when_an_order_is_cancelled()
     {
         // Arrange
