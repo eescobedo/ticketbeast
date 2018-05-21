@@ -50,9 +50,9 @@ class PurchaseTicketsTest extends TestCase
         $this->assertResponseStatus(201);
 
         $this->seeJsonSubset([
-            'email' => 'john@example.com',
+            'email'           => 'john@example.com',
             'ticket_quantity' => 3,
-            'amount' => 9750
+            'amount'          => 9750
         ]);
 
         // Make sure the customer was charged the correct amount
@@ -202,5 +202,22 @@ class PurchaseTicketsTest extends TestCase
         $this->assertFalse($concert->hasOrderFor('john@example.com'));
         $this->assertEquals(0, $this->paymentGateway->totalCharges());
         $this->assertEquals(50, $concert->ticketsRemaining());
+    }
+
+    /** @test */
+    function cannot_purchase_tickets_another_customer_is_already_trying_to_purchase()
+    {
+        // Arrange
+        $concert = factory(Concert::class)->states('published')->create()->addTickets(3);
+
+        $this->orderTickets($concert, [
+            'email'           => 'personA@example.com',
+            'ticket_quantity' => 51,
+            'payment_token'   => $this->paymentGateway->getValidTestToken()
+        ]);
+
+        // Act
+
+        // Assert
     }
 }
