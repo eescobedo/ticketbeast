@@ -36,8 +36,7 @@ class ConcertOrdersController extends Controller
 
         try {
             // Find some tickets
-            $tickets = $concert->findTickets(request('ticket_quantity'));
-
+            $tickets = $concert->reserveTickets(request('ticket_quantity'));
             $reservation = new Reservation($tickets);
 
             // Charge the customer for the tickets
@@ -49,6 +48,7 @@ class ConcertOrdersController extends Controller
             $order = Order::forTickets($tickets, request('email'), $reservation->totalCost());
 
             return response()->json($order, 201);
+
         } catch (PaymentFailedException $e) {
             return response()->json([], 422);
         } catch (NotEnoughTicketsException $e) {
